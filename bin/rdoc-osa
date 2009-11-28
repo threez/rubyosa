@@ -214,8 +214,17 @@ datadir = if Config.respond_to?(:datadir)
 else
   File.join(Config::CONFIG['datadir'], 'rubyosa')
 end
+
+# aviod problems with th epopular darkfish generator
+begin
+  require "rdoc/generator/darkfish"
+  USE_TEMPLATES = false
+rescue => ex
+  USE_TEMPLATES = true
+end
+
 template = File.join(datadir, 'rdoc_html.rb')
-if File.exists?(template)
+if File.exists?(template) && USE_TEMPLATES
   rdoc_flags << " --template '#{template}' "
 end
 rdoc_flags << " --title '#{app_name} RubyOSA API' "
