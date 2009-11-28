@@ -50,6 +50,16 @@ new_filename_prefix = 'osx_'
     end
 end
 
+# ID is unknown to ruby since 1.8.7 and snow leopard
+ruby_version = RUBY_VERSION.gsub(".", "").to_i 
+mac_os_x_version = `uname -r`.gsub(".", "").to_i 
+if ruby_version > 186 && mac_os_x_version >= 1020
+  $stderr.puts "fixing ID to RB_ID ..."
+  File.open(File.join('./src', new_filename_prefix + "ruby.h"), "a+") do |file|
+    file.puts "typedef RB_ID ID;"
+  end
+end
+
 # Generate the Makefile
 create_makefile('osa', 'src')
 
